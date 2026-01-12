@@ -148,6 +148,9 @@ def run_finetune(
     trainer.add_callback(cb_early_stop)
  
     # ---- Train
+    log.info("=== BASELINE EVAL (before SFT train) ===")
+    trainer.evaluate()
+    
     log.info("Starting training…")
     trainer.train()
  

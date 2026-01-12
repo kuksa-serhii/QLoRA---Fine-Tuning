@@ -72,6 +72,12 @@ def run_dpo(
     # If SFT adapter provided -> continue training that adapter
     if getattr(cfg, "sft_adapter_dir", None):
         model = load_trainable_adapter(base, cfg.sft_adapter_dir)
+        # ---- IMPORTANT: fix checkpointing warning (NEW)
+        try:
+            model.enable_input_require_grads()
+            log.info("Enabled input require grads for gradient checkpointing")
+        except Exception as e:
+            log.warning(f"Could not enable input require grads: {e}")
     else:
         # No SFT adapter -> train a fresh LoRA adapter for DPO
         # We reuse the same LoRA config as in SFT (r/alpha/dropout/target_modules)
@@ -155,6 +161,9 @@ def run_dpo(
         trainer.add_callback(cb_ab)
  
     # ---- Train
+    log.info("=== BASELINE EVAL (before DPO train) ===")
+    trainer.evaluate()
+    
     log.info("Starting DPO training…")
     trainer.train()
  
