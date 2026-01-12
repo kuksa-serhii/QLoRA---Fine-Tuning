@@ -375,20 +375,19 @@ class DPOMetricsCallback(TrainerCallback):
         self._log.info("DPOMetricsCallback finished | csv=%s", self.csv_path)
  
     def _select_keys(self, logs: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Pick a stable set of metrics if present.
-        Normalizes learning rate key (lr / learning_rate).
-        """
-        out = {}
- 
-   
-        # --- primary loss keys
-        for k in ["loss", "eval_loss"]:
-            if k in logs:
-                out[k] = logs[k]
-   
-        # --- DPO / TRL specific keys (version-dependent)
-        dpo_keys = [
+        # normalize keys to catch TRL variations
+        norm = {}
+        for k, v in logs.items():
+            nk = k.strip()
+            nk = nk.replace(" ", "")
+            nk_low = nk.lower()
+            norm[nk_low] = v
+
+        keys_priority = [
+            "loss",
+            "eval_loss",
+            "learning_rate",
+
             "rewards/accuracies",
             "rewards/margins",
             "rewards/chosen",
@@ -396,6 +395,7 @@ class DPOMetricsCallback(TrainerCallback):
             "logps/chosen",
             "logps/rejected",
             "kl",
+
             "eval_rewards/accuracies",
             "eval_rewards/margins",
             "eval_rewards/chosen",
@@ -404,12 +404,21 @@ class DPOMetricsCallback(TrainerCallback):
             "eval_logps/rejected",
             "eval_kl",
         ]
-   
-        for k in dpo_keys:
-            if k in logs:
-                out[k] = logs[k]
-   
+
+        out = {}
+        for k in keys_priority:
+            if k in norm:
+                out[k] = norm[k]
+
+        # additionally include any rewards keys if present (normalized)
+        for k, v in norm.items():
+            if k.startswith("rewards/") and k not in out:
+                out[k] = v
+            if k.startswith("eval_rewards/") and k not in out:
+                out[k] = v
+
         return out
+
  
  
     def _fmt(self, x: Any) -> str:
