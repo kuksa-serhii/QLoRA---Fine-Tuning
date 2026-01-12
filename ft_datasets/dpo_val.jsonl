@@ -1,0 +1,2 @@
+{"messages": [{"role": "user", "content": "Question"}], "chosen": "Good answer", "rejected": "Bad answer"}
+{"messages": [{"role": "user", "content": "Another question"}], "chosen": "Better answer", "rejected": "Worse answer"}

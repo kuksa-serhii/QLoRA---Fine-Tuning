@@ -1,0 +1,2 @@
+{"messages": [{"role": "user", "content": "User question"}], "target": {"content": "Assistant answer"}}
+{"messages": [{"role": "user", "content": "Another question"}], "target": {"content": "Another answer"}}
