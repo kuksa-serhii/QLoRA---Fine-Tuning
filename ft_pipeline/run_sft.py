@@ -122,17 +122,6 @@ def run_finetune(
     )
     trainer.add_callback(cb_metrics)
    
-    if ab_indices:
-        cb_ab = ABSanityCallback(
-            tokenizer=tokenizer,
-            val_jsonl=cfg.val_jsonl,
-            out_dir=cfg.out_dir,
-            indices=list(ab_indices),
-            max_new_tokens=cfg.max_new_tokens_eval,
-            use_bf16=cfg.use_bf16,
-            every_eval=1,
-        )
-        trainer.add_callback(cb_ab)
  
     # ---- Early stopping on eval_loss (SFT)
  
@@ -146,10 +135,21 @@ def run_finetune(
     )
  
     trainer.add_callback(cb_early_stop)
+    
+    if ab_indices:
+        cb_ab = ABSanityCallback(
+            tokenizer=tokenizer,
+            val_jsonl=cfg.val_jsonl,
+            out_dir=cfg.out_dir,
+            indices=list(ab_indices),
+            max_new_tokens=cfg.max_new_tokens_eval,
+            use_bf16=cfg.use_bf16,
+            every_eval=1,
+        )
+        trainer.add_callback(cb_ab)
  
-    # ---- Train
-    log.info("=== BASELINE EVAL (before SFT train) ===")
-    trainer.evaluate()
+        log.info("=== BASELINE EVAL (before SFT train) ===")
+        trainer.evaluate()
     
     log.info("Starting training…")
     trainer.train()

@@ -160,9 +160,9 @@ def run_dpo(
         )
         trainer.add_callback(cb_ab)
  
-    # ---- Train
-    log.info("=== BASELINE EVAL (before DPO train) ===")
-    trainer.evaluate()
+        # ---- Train
+        log.info("=== BASELINE EVAL (before DPO train) ===")
+        trainer.evaluate()
     
     log.info("Starting DPO training…")
     trainer.train()
