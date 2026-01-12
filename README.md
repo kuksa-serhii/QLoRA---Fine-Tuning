@@ -20,7 +20,7 @@ This project contains a pipeline for fine-tuning large language models using QLo
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/kuksa-serhii/QLoRA---Fine-Tuning.git
 cd QLoRA---Fine-Tuning
 ```
 
@@ -215,17 +215,6 @@ The pipeline automatically performs A/B comparison before and after training on 
 - Ensure all packages are installed: `pip install -r requirements.txt`
 - Update transformers: `pip install --upgrade transformers`
 
-## 📝 License
-
-[Your License]
-
-## 🤝 Contributing
-
-[Instructions for contributors]
-
-## 📧 Contact
-
-[Your contacts]
 
 ---
 
